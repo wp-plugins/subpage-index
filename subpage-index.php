@@ -15,7 +15,7 @@ function subpageindex_func($args) {
 	$p=get_children(array(
 		'post_parent'=>$post->ID,
 		'numberposts'=>-1,
-		'orderby'=>'title',
+		'orderby'=>'page_order',
 		'order'=>'ASC',
 		'post_type'=>'page',
 		'depth'=>1,
@@ -28,19 +28,9 @@ function subpageindex_func($args) {
 		$out.= "<dt class='subpage_thumb'>";
 		$out.= "<a href='".get_permalink($subpagePost)."'>";
 
-		if($img=@wp_get_attachment_url(reset(get_post_meta($subpagePost->ID,'_thumbnail_id')))){
-			$out.= "<img class='logo' src='{$img}' />";
-		}
-
-		// show parent image
-		elseif($ancestors = get_post_ancestors($subpagePost)) foreach($ancestors as $ancestor){
-			if($img=@wp_get_attachment_url(reset(get_post_meta($ancestor->ID,'_thumbnail_id')))){
-				if('yes' !== @reset(get_post_meta($ancestor,'Prevent Image Inheritance (yes, no)'))){
-					$out.= "<img class='logo' src='{$img}' />";
-					break;
-				}
-			}
-		}
+		$out.= '<div style="float:left">';
+		$out.= wp_get_attachment_image(@reset(get_post_meta($subpagePost->ID,'_thumbnail_id')));
+		$out.= '</div>';
 
 		$out.= '</a>';
 		$out.= '</dt>';
